@@ -18,6 +18,16 @@ def get_category(file_type):
     else:
         return 'Others'
 
+def get_unique_filename(destination_folder, filename):
+    base, extension = os.path.splitext(filename)
+    new_filename = filename
+    counter = 1
+
+    while os.path.exists(os.path.join(destination_folder, new_filename)):
+        new_filename = f"{base}_{counter}{extension}"
+        counter += 1
+
+    return new_filename
 
 def sort_downloads_folder(downloads_path):
     for filename in os.listdir(downloads_path):
@@ -35,8 +45,9 @@ def sort_downloads_folder(downloads_path):
             if not os.path.exists(destination_folder):
                 os.makedirs(destination_folder)
 
-            destination_path = os.path.join(destination_folder, filename)
+            destination_filename = get_unique_filename(destination_folder, filename)
+            destination_path = os.path.join(destination_folder, destination_filename)
 
             # Move the file to the appropriate folder
             shutil.move(file_path, destination_path)
-            print(f"Moved {filename} to {destination_folder}")
+            print(f"Moved {filename} to {destination_folder} as {destination_filename}")
